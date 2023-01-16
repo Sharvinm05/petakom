@@ -24,6 +24,7 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 // Route::get('/dashboard/user', [App\Http\Controllers\DashboardController::class, 'index'])->name('user');
+Route::get('/reset-password/{token}', function ($token) {return view('auth.reset-password', ['token' => $token]);})->middleware('guest')->name('password.reset');
 
 //activity
 Route::get('/activity/viewActivity', [App\Http\Controllers\ActivityController::class, 'index'])->name('viewActivity');

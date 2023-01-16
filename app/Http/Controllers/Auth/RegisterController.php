@@ -69,5 +69,39 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+
+        $user_type = null;
+        switch ($request->role_type) {
+            case RoleType::ADMIN:
+                $user_type = Admin::create([
+                    'UserID' => $user->UserID,
+                    'staff_id' => $request->id_no
+                ]);
+//                $user->assignRole('admin');
+                break;
+            case RoleType::STUDENT:
+                $user_type = Student::create([
+                    'UserID' => $user->UserID,
+                    'matric_id' => $request->id_no
+                ]);
+//                $user->assignRole('student');
+                break;
+
+           case RoleType::COUNSELOR:
+                $user_type = Counselor::create([
+                    'UserID' => $user->UserID,
+                    'staff_id' => $request->id_no
+                ]);
+//                $user->assignRole('counselor');
+                break;
+        }
+
+        event(new Registered($user));
+
+        Auth::login($user);
+
+        return redirect(RouteServiceProvider::DASHBOARD);
     }
+
+
 }
