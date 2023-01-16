@@ -4,6 +4,7 @@ This is a starter template page. Use this page to start your new project from
 scratch. This page gets rid of all links and provides the needed markup only.
 -->
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,6 +20,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="{{ asset('/assets/plugins/fontawesome-free/css/all.min.css') }}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('/assets/dist/css/adminlte.min.css') }}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{{ asset('/assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('/assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('/assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
+  <!-- iCheck for checkboxes and radio inputs -->
+  <link rel="stylesheet" href="{{ asset('/assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+
+  @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -36,20 +45,36 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
       <!-- Right navbar links -->
       <ul class="navbar-nav ml-auto">
-        <li class="form-inline ml-3">User Name</li>
-        <!-- User -->
+        @guest
+        @if (Route::has('login'))
+        <li class="nav-item">
+          <a class="nav-link" href="{{ route('/activity/viewActivity') }}">{{ __('Login') }}</a>
+        </li>
+        @endif
+
+        @if (Route::has('register'))
+        <li class="nav-item">
+          <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+        </li>
+        @endif
+        @else
         <li class="nav-item dropdown">
-          <a class="nav-link" data-toggle="dropdown" href="#">
-            <i class="fas fa-user"></i>
+          <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+            {{ Auth::user()->name }}
           </a>
-          <div class="dropdown-menu">
-            <!-- Logout -->
-            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-              <i class="fas fa-sign-out-alt"></i>
-              Logout
+
+          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+              {{ __('Logout') }}
             </a>
+
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+              @csrf
+            </form>
           </div>
         </li>
+        @endguest
       </ul>
     </nav>
     <!-- /.navbar -->
@@ -79,7 +104,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="/proposal" class="nav-link" id="proposal">
                 <i class="nav-icon fas fa-copy"></i>
                 <p>
                   Proposal
@@ -87,7 +112,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </a>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="{{asset('/activity/viewActivity')}}" id="activity" class="nav-link">
                 <i class="nav-icon fas fa-edit"></i>
                 <p>
                   Activity
@@ -144,7 +169,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <form action="" method="POST"> 
+          <form action="" method="POST">
             <button type="submit" name="logoutSubmit" class="btn btn-primary">Logout</button>
           </form>
         </div>
@@ -152,13 +177,29 @@ scratch. This page gets rid of all links and provides the needed markup only.
     </div>
   </div>
 
-<!-- REQUIRED SCRIPTS -->
+  <!-- REQUIRED SCRIPTS -->
 
-<!-- jQuery -->
-<script src="{{ asset('/assets/plugins/jquery/jquery.min.js') }}"></script>
-<!-- Bootstrap 4 -->
-<script src="{{ asset('/assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<!-- AdminLTE App -->
-<script src="{{ asset('/assets/dist/js/adminlte.min.js') }}"></script>
+  <!-- jQuery -->
+  <script src="{{ asset('/assets/plugins/jquery/jquery.min.js') }}"></script>
+  <!-- Bootstrap 4 -->
+  <script src="{{ asset('/assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <!-- AdminLTE App -->
+  <script src="{{ asset('/assets/dist/js/adminlte.min.js') }}"></script>
+  <!-- DataTables  & Plugins -->
+  <script src="{{ asset('/assets/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ asset('/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+  <script src="{{ asset('/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+  <script src="{{ asset('/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+  <script src="{{ asset('/assets/plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+  <script src="{{ asset('/assets/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+  <script src="{{ asset('/assets/plugins/jszip/jszip.min.js') }}"></script>
+  <script src="{{ asset('/assets/plugins/pdfmake/pdfmake.min.js') }}"></script>
+  <script src="{{ asset('/assets/plugins/pdfmake/vfs_fonts.js') }}"></script>
+  <script src="{{ asset('/assets/plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+  <script src="{{ asset('/assets/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
+  <script src="{{ asset('/assets/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
+
+  @stack('scripts')
 </body>
+
 </html>

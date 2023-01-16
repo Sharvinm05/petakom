@@ -41,4 +41,20 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public function activityrecord()
+    {
+      return $this->hasMany(activityRecord::class)->orderBy('created_at', 'DESC');
+    }
+
+    public function registrations()
+    {
+        return $this->hasMany(Registration::class);
+    }
+
+    public function proposals()
+    {
+      return $this->hasMany(ProposalRecord::class)->orderBy('created_at', 'DESC');
+    }
 }
